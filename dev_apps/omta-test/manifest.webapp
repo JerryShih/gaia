@@ -1,0 +1,20 @@
+{
+  "name": "omta test",
+  "description": "omta test",
+  "launch_path": "/index.html",
+  "fullscreen": true,
+  "developer": {
+    "name": "The Gaia Team",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "en-US": {
+      "name": "omta test",
+      "description": "omta test"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "68": "/style/icons/icon.png"
+  }
+}

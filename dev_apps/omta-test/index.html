@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style> 
+      body {
+        margin: 0;
+        padding: 0;
+        background-image: url('img.jpg');
+      }
+      div {
+        width:100px;
+        height:100px;
+        background:red;
+        position:relative;
+        animation:mymove 4s infinite;
+        animation-timing-function:linear;
+      }
+
+      @keyframes mymove {
+        0% {top:50px; left: 50px}
+        50% {top:450px; left: 50px}
+        100% {top:50px; left: 50px}
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
