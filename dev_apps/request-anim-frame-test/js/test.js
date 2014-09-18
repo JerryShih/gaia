@@ -47,7 +47,10 @@ function printStatistic() {
 function update(timeStamp) {
   var delta = timeStamp - previousTime;
   previousTime = timeStamp;
-
+  var box = document.getElementById('box');
+  box.style.top = frameID+'px';
+  box.style.left = frameID + 'px';
+  dump('bignose'+frameID);
   timeData[frameNumber].timeDelta = delta;
   timeData[frameNumber].frameNumber = frameID;
   frameID++;
