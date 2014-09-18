@@ -44,13 +44,32 @@ function printStatistic() {
        'min:('+timeMinFrame+','+timeMin+')');
 }
 
+var startPosX = 20;
+var startPosY = 20;
+var endPosX = 200;
+var endPosY = 400;
+var currentX = 100;
+var currentY = 70;
+var valueX = 1;
+var valueY = 1;
 function update(timeStamp) {
   var delta = timeStamp - previousTime;
   previousTime = timeStamp;
   var box = document.getElementById('box');
-  box.style.top = frameID+'px';
-  box.style.left = frameID + 'px';
-  dump('bignose'+frameID);
+
+  if(currentX>endPosX || currentX < startPosX){
+    valueX*=-1;
+  }
+  if(currentY>endPosY || currentY < startPosY){
+    valueY*=-1;
+  }
+
+  currentX+=valueX;
+  currentY+=valueY;
+  dump(currentX+','+currentY);
+  box.style.top = currentY + 'px';
+  box.style.left = currentX + 'px';
+
   timeData[frameNumber].timeDelta = delta;
   timeData[frameNumber].frameNumber = frameID;
   frameID++;
