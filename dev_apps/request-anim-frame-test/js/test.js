@@ -10,6 +10,13 @@ for(var i=0;i<timeData.length;++i){
   };
 }
 function printStatistic() {
+  var outOfRangeNum = 0;
+  for(var i=0;i<timeData.length;++i){
+    if (timeData[i].timeDelta > 18.6 || timeData[i].timeDelta < 14.6) {
+      ++outOfRangeNum;
+    }
+  }
+
   var total = 0;
   for(var i=0;i<timeData.length;++i){
     total += timeData[i].timeDelta;
@@ -40,12 +47,13 @@ function printStatistic() {
 
   dump('avg:'+avg+' '+
        'std:'+std+' '+
+       'outOfRangeNum(data > 18 or data < 14):' + outOfRangeNum + ' ' +
        'max:('+timeMaxFrame+','+timeMax+')'+' '+
        'min:('+timeMinFrame+','+timeMin+')');
 }
 
-var startPosX = 20;
-var startPosY = 20;
+var startPosX = 70;
+var startPosY = 70;
 var endPosX = 200;
 var endPosY = 400;
 var currentX = 100;
@@ -55,30 +63,39 @@ var valueY = 1;
 function update(timeStamp) {
   var delta = timeStamp - previousTime;
   previousTime = timeStamp;
-  var box = document.getElementById('box');
 
+  ///*
+  timeData[frameNumber].timeDelta = delta;
+  timeData[frameNumber].frameNumber = frameID;
+  frameID++;
+  frameNumber++;
+  if(frameNumber==256){
+    printStatistic();
+    frameNumber = 0;
+  }
+  //*/
+
+  ///*
   if(currentX>endPosX || currentX < startPosX){
     valueX*=-1;
   }
   if(currentY>endPosY || currentY < startPosY){
     valueY*=-1;
   }
-
-  currentX+=valueX;
+  //currentX+=valueX;
   currentY+=valueY;
-  dump(currentX+','+currentY);
+  var box = document.getElementById('box');
   box.style.top = currentY + 'px';
   box.style.left = currentX + 'px';
-
-  timeData[frameNumber].timeDelta = delta;
-  timeData[frameNumber].frameNumber = frameID;
-  frameID++;
-  frameNumber++;
-
-  if(frameNumber==256){
-    printStatistic();
-    frameNumber = 0;
+  if (delta>18.6 || delta<14.6) {
+    box.style.backgroundColor = 'green';
+  } else {
+        box.style.backgroundColor = 'red';
   }
+
+  //*/
+  //dump(currentX+','+currentY);
+
 
   requestAnimationFrame(update);
 }
