@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>OMTA Test Case</title>
+    <meta name="author" content="Brian Birtles">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="index_files/reveal.css">
+    <link rel="stylesheet" href="index_files/fire.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="index_files/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body style="transition: -moz-transform 0.8s ease 0s;">
+    <div class="background">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+
+    <div data-background-transition="default" data-transition-speed="fast" class="reveal fade center">
+      <div style="width: 960px; height: 700px; transform: translate(-50%, -50%) scale(1) translate(50%, 50%);" class="slides">
+      <script src="index_files/TweenMax.js"></script>
+
+
+        <section class="past" style="top: -280px; display: block;" id="jank-intro" hidden="">
+          <h3>ためらっているブラウザー</h3>
+          <div class="jank-eg">
+            <img src="index_files/foksuke.svg" class="seamless" id="jank-intro-anim-target" width="300">
+            <div class="interrupt-controls">
+              <button class="interrupt">忙しくさせる</button>
+            </div>
+          </div>
+          <script>
+            // Some of this stuff is global since we use it below as well
+            (function() {
+              var jankSpinDur = 1200
+                 ,scriptStart
+                 ,rafId
+                 ,target;
+
+              function spin(now) {
+                if (!scriptStart) {
+                  scriptStart = now;
+                }
+                var progress = (now - scriptStart) / jankSpinDur % 1;
+                target.style.transform = "rotate(" + (progress * -360) + "deg)";
+                rafId = window.requestAnimationFrame(spin);
+              }
+
+              window.startJankSpin = function(elem) {
+                target = elem;
+                rafId = window.requestAnimationFrame(spin);
+              };
+
+              window.stopJankSpin = function() {
+                if (rafId) {
+                  window.cancelAnimationFrame(rafId);
+                  rafId = null;
+                  target.style.transform = "";
+                }
+                target = null;
+                scriptStart = null;
+              };
+            })();
+
+            function startJankIntroAnim() {
+              startJankSpin(document.getElementById("jank-intro-anim-target"));
+            }
+            function stopJankAnim() {
+              stopJankSpin();
+            }
+
+            // Interrupt button handling
+            (function() {
+              var button;
+              function interrupt(evt) {
+                button = evt.target;
+                window.setTimeout(pause, 0);
+                window.setTimeout(pause, 400);
+                window.setTimeout(pause, 800);
+                window.setTimeout(pause, 1200);
+              }
+
+              function pause() {
+                button.classList.add("active");
+                var start = window.performance.now();
+                while (window.performance.now() - start < 300);
+                button.classList.remove("active");
+              }
+
+              window.addEventListener("load", function() {
+                [].forEach.call(
+                  document.querySelectorAll("button.interrupt"),
+                  function(button) {
+                    button.addEventListener("click", interrupt);
+                  });
+              });
+            })();
+          </script>
+        </section>
+
+        <section class="present" style="top: -298px; display: block;">
+          <h3>JS vs Compositor</h3>
+          <div class="jank-eg">
+            <div class="side-by-side">
+              <figure>
+                <img src="index_files/foksuke.svg" class="seamless" id="jank-eg-script-version">
+                <figcaption>スクリプト (GSAP)</figcaption>
+              </figure>
+              <figure>
+                <img src="index_files/foksuke.svg" class="seamless" id="jank-eg-css-version">
+                <figcaption>CSS</figcaption>
+              </figure>
+            </div>
+            <div class="play-controls">
+              <button class="play" id="play-comparison-button">CSS Animation</button>
+              <button class="interrupt">Make main thread busy</button>
+            </div>
+          </div>
+          <script>
+            (function() {
+              var playButton =
+                document.getElementById("play-comparison-button");
+              var scriptTarget =
+                document.getElementById("jank-eg-script-version");
+              var cssTarget = document.getElementById("jank-eg-css-version");
+              var gsapAnim;
+
+              playButton.addEventListener("click", function() {
+                if (playButton.playing) {
+                  stopGSAPSpin(scriptTarget);
+                  cssTarget.classList.remove("spin");
+                  delete playButton.playing;
+                  playButton.textContent = "再生";
+                } else {
+                  startGSAPSpin(scriptTarget);
+                  cssTarget.classList.add("spin");
+                  playButton.playing = true;
+                  playButton.textContent = "一時停止";
+                }
+              });
+
+              function startGSAPSpin(elem) {
+                gsapAnim = TweenMax.to(elem, 1.2, { rotation: 360,
+                                                    ease: Linear.easeNone,
+                                                    repeat: -1 });
+              }
+              function stopGSAPSpin(elem) {
+                gsapAnim.kill();
+                gsapAnim = undefined;
+                // GSAP doesn't seem to reset properties
+                elem.style.transform = "";
+              }
+            })();
+          </script>
+        </section>
+
+        
+        <section class="future" style="top: -186px; display: block;" hidden="">
+          <h3>スクリプトはダメ？</h3>
+          <pre data-fragment-index="0" class="fragment"><code data-trim="" class="javascript" contenteditable=""><span class="comment">// Web Animations API! \o/</span>
+elem.animate({ transform: <span class="string">'rotate(360deg)'</span> },
+             { duration: <span class="number">1200</span>,
+               iterations: <span class="literal">Infinity</span> });</code></pre>
+          <ul data-fragment-index="1" class="fragment">
+            <li>Chrome 36
+          </li></ul>
+          <aside data-markdown-parsed="true" class="notes" data-markdown=""><ul>
+<li>Mention this can also be used to report which animations are
+running on compositor</li>
+</ul>
+</aside>
+        </section>
+
+        <section class="future" style="top: -248px; display: block;" id="web-anim-eg" hidden="">
+          <h3>Web Animations 実装中</h3>
+          <img src="index_files/foksuke.svg" class="seamless" width="300">
+          <aside class="notes">
+            変数[へんすう] = variable
+            割当たる[わりあたる] = assign
+          </aside>
+        </section>
+
+        <section class="future" style="top: -20px; display: none;" hidden="">
+          <img src="index_files/foksuke.svg" class="seamless" style="width:250px; position:absolute; right: 0" <="" section="">
+      </section></div>
+
+    <div class="backgrounds"><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div data-background-hash="img/genie.pngcontainnullblacknullcenternull" style="background-image: url(&quot;img/genie.png&quot;); background-size: contain; background-color: black; background-position: center center;" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div style="background-color: black;" data-background-hash="0blacknullnullnull" class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background past"></div><div class="slide-background present"></div><div class="slide-background future"></div><div class="slide-background future"></div><div class="slide-background future"></div><div class="slide-background future"></div><div class="slide-background future"></div><div class="slide-background future"></div></div><div style="display: block;" class="progress"><span style="width: 2295.17px;"></span></div><aside style="display: none;" class="controls"><div class="navigate-left enabled"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="state-background"></div><div class="pause-overlay"></div></div>
+
+    <script src="index_files/head.js"></script>
+    <script src="index_files/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+        loop: false,
+        previewLinks: false,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+        transitionSpeed: 'fast',
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+      Reveal.addEventListener('slidechanged', function(evt) {
+        if (evt.currentSlide.id == 'jank-intro') {
+          startJankIntroAnim();
+        } else {
+          stopJankAnim();
+        }
+
+        // There seems to be some kind of invalidation bug that means if
+        // this is still animating we don't always transition properly
+        // to the next frame so we disable this animation when we leave the
+        // frame
+        var webAnimEg = document.querySelector("#web-anim-eg img");
+        webAnimEg.classList.toggle('spin',
+                                   evt.currentSlide.id == 'web-anim-eg');
+      });
+
+    </script><script src="index_files/marked.js" type="text/javascript"></script><script src="index_files/markdown.js" type="text/javascript"></script>
+    
+  
+
+<script src="index_files/highlight.js" type="text/javascript"></script><script src="index_files/zoom.js" type="text/javascript"></script><script src="index_files/notes.js" type="text/javascript"></script></body></html>

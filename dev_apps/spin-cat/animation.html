@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>OMTA Test Case</title>
+    <meta name="author" content="Brian Birtles">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="fire.css" id="theme">
+    <script language="javascript" type="text/javascript">
+      function startAnimation() {
+        var cssTarget = document.getElementById("jank-eg-css-version");
+        cssTarget.classList.add("spin");
+      }
+    </script>
+  </head>
+
+  <body style="transition: -moz-transform 0.8s ease 0s;" onload="startAnimation()">
+    <div data-background-transition="default" data-transition-speed="fast" class="reveal fade center">
+          <div class="jank-eg">
+            <div class="side-by-side">
+              <figure>
+                <img src="images/foksuke.svg" class="seamless" id="jank-eg-css-version">
+              </figure>
+            </div>
+          </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "Spin the Fox",
+  "description": "Spin the Fox",
+  "launch_path": "/animation.html",
+  "fullscreen": true,
+  "developer": {
+    "name": "Brian Birtles",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "en-US": {
+      "name": "Spin The Fox",
+      "description": "Spin the Fox"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "512": "/images/icon.png"
+  }
+}

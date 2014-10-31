@@ -1,0 +1,92 @@
+/**
+ * Beige theme for reveal.js.
+ *
+ * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+
+.reveal {
+  font-family: "Open Sans", sans-serif;
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: -0.02em;
+  color: #333333; }
+
+/*********************************************
+ * BACKGROUND
+ *********************************************/
+
+body {
+  background: #fff2c9;
+}
+
+body .background {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+/*********************************************
+ * SIDE-BY-SIDE COMPARISON
+ *********************************************/
+.reveal .side-by-side {
+  display: flex;
+}
+.reveal .side-by-side.unequal {
+  align-items: center;
+}
+.reveal .side-by-side * {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+.reveal .side-by-side div {
+  flex: none;
+  margin: 0.5em;
+}
+.reveal .side-by-side figure {
+  flex: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.reveal .side-by-side img
+{
+  width: 100%;
+  border: 3px solid black;
+}
+
+/*********************************************
+ * JANK EXAMPLE
+ *********************************************/
+
+.reveal .jank-eg {
+  text-align: center;
+}
+
+.reveal .jank-eg img {
+  border: none;
+  will-change: transform;
+  transform-origin: 40% 50%;
+}
+.reveal .jank-eg .side-by-side img {
+  width: 230px;
+}
+.reveal .jank-eg .spin {
+  animation: jank-spin 2.0s infinite linear;
+  -webkit-animation: jank-spin 2.0s infinite linear;
+}
+
+@-webkit-keyframes jank-spin {
+  50% { transform: translate(0px, 300px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+@keyframes jank-spin {
+  /*to { transform: rotate(360deg); } */
+  50% { transform: translate(0px, 300px); }
+  100% { transform: translate(0px, 0px); }
+}
