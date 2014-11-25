@@ -41,3 +41,4 @@ dev_apps/omta-test
 dev_apps/request-anim-frame-test
 dev_apps/bounce-cat
 dev_apps/spin-cat
+dev_apps/webgl-cube
